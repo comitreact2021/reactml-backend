@@ -18,13 +18,19 @@ router.post('/', (req, res) => {
       if (result.length === 1) {
         console.log(result);
 
-        req.session.user = { name: result[0].nombre };
+        const nombreCompleto = `${result[0].nombre} ${result[0].apellido}`;
+
+        req.session.user = {
+          name: nombreCompleto,
+        };
 
         console.log(req.session.user);
 
-        res.json({ message: 'Usuario valido!' });
+        res
+          .status(200)
+          .json({ message: 'Usuario valido', data: nombreCompleto });
       } else {
-        res.json({ message: 'Email y/o contraseña incorrecta' });
+        res.status(401).json({ message: 'Email y/o contraseña incorrecta' });
       }
     }
   });
@@ -32,7 +38,13 @@ router.post('/', (req, res) => {
 
 //Cerrar sesion
 router.delete('/', (req, res) => {
-  res.send({ message: 'Cerrar sesion' });
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({ message: 'Error al cerrar la sesion' });
+    } else {
+      res.json({ message: 'Sesion cerrada' });
+    }
+  });
 });
 
 module.exports = router;
