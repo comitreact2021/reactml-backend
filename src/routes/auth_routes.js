@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const conexion = require('../connection');
 
+router.get('/check', (req, res) => {
+  if (req.session.user) {
+    res.json({ message: 'ok', data: req.session.user });
+  } else {
+    res.json({ message: 'error' });
+  }
+});
+
 //Iniciar sesion
 router.post('/', (req, res) => {
   console.log(req.session.user);
@@ -22,6 +30,7 @@ router.post('/', (req, res) => {
 
         req.session.user = {
           name: nombreCompleto,
+          id: result[0].id,
         };
 
         console.log(req.session.user);
