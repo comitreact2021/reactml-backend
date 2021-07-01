@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const fileupload = require('express-fileupload');
 
 const usuariosRoutes = require('./routes/usuarios_routes');
 const publicacionesRoutes = require('./routes/publicaciones_routes');
@@ -10,6 +11,8 @@ const categoriasRoutes = require('./routes/categorias_routes');
 const app = express();
 
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+
+app.use(fileupload());
 
 app.use(
   session({
