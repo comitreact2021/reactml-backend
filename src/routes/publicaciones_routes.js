@@ -121,6 +121,7 @@ router.put('/:id', (req, res) => {
       }
     });
 
+    //Obtengo la nueva imagen
     const pubImage = req.files.pubImage;
 
     imageFileName = Date.now() + path.extname(pubImage.name);
@@ -132,7 +133,49 @@ router.put('/:id', (req, res) => {
         console.log(err);
       }
     });
+
+    sqlUpdate += ', imagen = ?';
+    values.push(imageFileName);
   }
+
+  sqlUpdate += ' WHERE id = ?';
+  values.push(req.params.id);
+
+  connection.query(sqlUpdate, values, (err, result) => {
+    if (err) {
+      res.json({
+        status: 'error',
+        message: 'Error al modificar la publicación',
+      });
+    } else {
+      res.json({
+        status: 'ok',
+        message: 'Publicación modificada correctamente',
+      });
+    }
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  //TO DO: Borrar el archivo de la imagen de la publicacion
+
+  const sql = `DELETE
+               FROM publicaciones
+               WHERE id = ?`;
+
+  connection.query(sql, [req.params.id], (err, result) => {
+    if (err) {
+      res.json({
+        status: 'error',
+        message: 'Error al eliminar la publicación',
+      });
+    } else {
+      res.json({
+        status: 'ok',
+        message: 'La publicación ha sido eliminada correctamente',
+      });
+    }
+  });
 });
 
 module.exports = router;
